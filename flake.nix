@@ -22,6 +22,9 @@
         packages = with pkgs; [
           php84
           php84Packages.composer
+          nodejs_22
+          mongodb-ce
+          mongodb-compass
         ];
 
         shellHook = ''
