@@ -1,6 +1,6 @@
 # flake.nix
 {
-  description = "php environment";
+  description = "php environment for CXF 2";
 
   inputs = { 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -18,7 +18,7 @@
   in
   {
     devShells = forEachSupportedSystem ({ pkgs }: {
-      cxf2 = pkgs.mkShell {
+      default = pkgs.mkShell {
         packages = with pkgs; [
           php84
           php84Packages.composer
@@ -26,6 +26,7 @@
 
         shellHook = ''
           export SHELL=/run/current-system/sw/bin/zsh
+          zsh
         '';
 
       };
