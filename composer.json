@@ -1,0 +1,11 @@
+{
+    "name": "mints.cloud/cxf2-devshell",
+    "description": "CXF 2 Dev Environment",
+    "license": "proprietary",
+    "require": {
+        "laravel/installer": "^5.11"
+    },
+    "bin": [
+        "vendor/bin/laravel"
+    ]
+}  
