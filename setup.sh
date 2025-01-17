@@ -42,6 +42,12 @@ case $ACTION in
   run)
     ;;
   fresh)
+    echo "Setting up the environment..."
+    npm install
+    composer install --ignore-platform-req=ext-mongodb
+    cp .env.example .env
+    php artisan key:generate
+
     echo "Running migrations and seeders..."
     php artisan migrate:fresh
     php artisan db:seed
