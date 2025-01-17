@@ -41,7 +41,7 @@
           })
         ];
         shellHook = ''
-          echo "Setting up MongoDB as a single-node replica set..."
+          echo "Setting up the development environment for California XF..."
 
           # Define MongoDB data and log directories
           MONGO_DB_PATH="$HOME/.local/mongodb/db"
@@ -63,7 +63,7 @@
             # Wait for mongod to start
             sleep 2
 
-            # Initialize the replica set
+            # Initialize the replica set using mongosh
             echo "Initializing replica set..."
             mongosh --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
 
@@ -72,11 +72,42 @@
             echo "mongod is already running."
           fi
 
-          # Ensure mongod is stopped when the shell exits
-          trap "echo 'Stopping MongoDB...'; pkill mongod" EXIT
+          # Ensure that mongod, the PHP server, and the NPM frontend are stopped when exiting the shell
+          trap "echo 'Stopping services...'; pkill mongod; pkill -f 'php artisan serve'; pkill -f 'npm run dev'" EXIT
 
-          export SHELL=/run/current-system/sw/bin/zsh
-          zsh
+          # Run PHP commands only once if necessary
+          if [ ! -f "vendor/autoload.php" ]; then
+            echo "Installing PHP dependencies..."
+            composer install
+          fi
+
+          # Check if migrations have already been run
+          # if ! php artisan migrate | grep -q "Nothing to migrate"; then
+          #   echo "Running migrations and seeders..."
+          #   php artisan migrate:fresh
+          #   php artisan db:seed
+          #   php artisan db:seed --class=TestingDataSeeder
+          # else
+          #   echo "Migrations have already been run."
+          # fi
+
+          # Start the PHP server in the background if it's not running
+          if ! pgrep -f "php artisan serve" > /dev/null; then
+            echo "Starting PHP server..."
+            php artisan serve &
+          else
+            echo "PHP server is already running."
+          fi
+
+          # Start the NPM frontend in the background if it's not running
+          if ! pgrep -f "npm run dev" > /dev/null; then
+            echo "Starting NPM frontend..."
+            npm run dev &
+          else
+            echo "NPM frontend is already running."
+          fi
+
+          echo "Development environment is ready. Access it at http://localhost:8000"
         '';
       };
     });
