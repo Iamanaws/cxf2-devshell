@@ -39,6 +39,8 @@ else
 fi
 
 case $ACTION in
+  run)
+    ;;
   fresh)
     echo "Running migrations and seeders..."
     php artisan migrate:fresh

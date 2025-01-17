@@ -27,6 +27,10 @@
     ];
 
     setupScript = pkgs: pkgs.writeScript "setup.sh" (builtins.readFile ./setup.sh);
+
+    stopServicesTrap = ''
+      trap "echo 'Stopping services...'; pkill mongod; pkill -f 'php artisan serve'; pkill -f 'npm run dev'" EXIT
+    '';
   in {
     packages = forEachSupportedSystem ({ pkgs }: {
       default = pkgs.callPackage ./package.nix { };
@@ -36,15 +40,15 @@
       default = pkgs.mkShell {
         packages = commonPackages pkgs;
         shellHook = ''
-          trap "echo 'Stopping services...'; pkill mongod; pkill -f 'php artisan serve'; pkill -f 'npm run dev'" EXIT
-          ${setupScript pkgs}
+          ${stopServicesTrap}
+          ${setupScript pkgs} run
         '';
       };
 
       fresh = pkgs.mkShell {
         packages = commonPackages pkgs;
         shellHook = ''
-          trap "echo 'Stopping services...'; pkill mongod; pkill -f 'php artisan serve'; pkill -f 'npm run dev'" EXIT
+          ${stopServicesTrap}
           ${setupScript pkgs} fresh
         '';
       };
@@ -52,7 +56,7 @@
       migrate = pkgs.mkShell {
         packages = commonPackages pkgs;
         shellHook = ''
-          trap "echo 'Stopping services...'; pkill mongod; pkill -f 'php artisan serve'; pkill -f 'npm run dev'" EXIT
+          ${stopServicesTrap}
           ${setupScript pkgs} migrate
         '';
       };
@@ -60,7 +64,7 @@
       load = pkgs.mkShell {
         packages = commonPackages pkgs;
         shellHook = ''
-          trap "echo 'Stopping services...'; pkill mongod; pkill -f 'php artisan serve'; pkill -f 'npm run dev'" EXIT
+          ${stopServicesTrap}
           ${setupScript pkgs} load
         '';
       };
