@@ -15,6 +15,8 @@ mkdir -p "$(dirname "$MONGO_LOG_PATH")"
 # Check if mongod is already running
 if ! pgrep -x "mongod" > /dev/null; then
   echo "Starting mongod with replica set configuration..."
+  ulimit -n 64000
+
   mongod --dbpath "$MONGO_DB_PATH" \
         --logpath "$MONGO_LOG_PATH" \
         --replSet rs0 \
