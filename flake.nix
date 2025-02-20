@@ -41,6 +41,14 @@
         packages = commonPackages pkgs;
         shellHook = ''
           ${stopServicesTrap}
+          ${setupScript pkgs} load
+        '';
+      };
+
+      run = pkgs.mkShell {
+        packages = commonPackages pkgs;
+        shellHook = ''
+          ${stopServicesTrap}
           ${setupScript pkgs} run
         '';
       };
