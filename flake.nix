@@ -30,7 +30,6 @@
           nodejs_22
           mongodb-ce
           mongosh
-          (pkgs.callPackage ./package.nix { php = mkPhp pkgs; })
         ];
 
       # Write the setup script
